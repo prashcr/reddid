@@ -1,2 +1,4 @@
 # reddid
-reddid, the Reddit Image Downloader
+![Reddit Alien](http://www.redditstatic.com/icon.png)  
+
+## Reddit Image Downloader
