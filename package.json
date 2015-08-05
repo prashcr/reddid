@@ -1,0 +1,26 @@
+{
+  "name": "reddid",
+  "version": "1.0.0",
+  "description": "Reddit Image Downloader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prashcr/reddid.git"
+  },
+  "keywords": [
+    "reddit",
+    "image",
+    "images",
+    "downloader",
+    "grabber"
+  ],
+  "author": "Prashanth Chandra",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/prashcr/reddid/issues"
+  },
+  "homepage": "https://github.com/prashcr/reddid#readme"
+}
