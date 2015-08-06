@@ -1,4 +1,4 @@
-![Reddit Alien](http://www.redditstatic.com/icon.png)
+![Reddid Alien](reddid.png)
 
 reddid
 ====
