@@ -5,7 +5,7 @@ reddid
 
 > Reddit Image Downloader  
 
-**reddid** is a simple command-line app written in Node.js that lets you download images from image-based subreddits on [Reddit](http://reddit.com), using their API.
+**reddid** is a simple command-line app written in Node.js that lets you download images from image-based subreddits on [Reddit](http://reddit.com), using their [API](https://www.reddit.com/dev/api).
 
 At the moment, only simple image downloads are supported, where `post.data.url` points to a valid image file and nothing else.
 
@@ -18,7 +18,7 @@ Usage
 **category** default: hot  
 **limit** default: 25
 
-**reddid** uses ES6, so you might have to transpile it first or alias `babel-node --optional strict --stage 1 -- ` in your `.bashrc`/`.zshrc` and use that instead of `node`
+**reddid** uses ES6, so you might have to transpile it to ES5 first or you can use `node --harmony` on `v0.12` or above. 
 
 License
 ----
