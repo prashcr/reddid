@@ -18,4 +18,9 @@ function getPosts(cb) {
   }).on('error', err => console.error(err));
 }
 
-getPosts(console.log);
+function getImage(post) {
+  var url = post.data.url;
+  console.log(url);
+}
+
+getPosts(getImage);
