@@ -17,7 +17,7 @@ function getPosts(cb) {
     res.on('data', d => body += d);
     res.on('end', () => {
       var parsed = JSON.parse(body);
-      parsed.data.children.map(cb);
+      parsed.data.children.forEach(cb);
     });
   }).on('error', err => console.error(err));
 }
