@@ -24,12 +24,13 @@ function getPosts(cb) {
 
 function getImage(post) {
   var url = post.data.url;
-  var imgurImageRegex = /^http\:\/\/(i\.)?imgur\.com\/([A-Z0-9]{7})(?:(\.jpg)|(\.gifv))?(?:\?1)?$/i;
+  var imgurImageRegex = /^https?\:\/\/(i\.)?imgur\.com\/([A-Z0-9]{7})(?:(\.jpg)|(\.gifv))?(?:\?1)?$/i;
   //var imgurAlbumRegex = /^http\:\/\/imgur\.com\/a\/[a-zA-Z0-9]{5}/;
   var m = url.match(imgurImageRegex);
   var ext;
  
-  if (m) {  // If valid http imgur image url
+  if (m) {  // If valid imgur image url
+    if (~url.indexOf('https')) url = url.replace('https', 'http'); // If url is https, use http instead
     if (m[4]) ext = '.webm'; // If url is .gifv
     else {
       ext = '.jpg';

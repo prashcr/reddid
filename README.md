@@ -7,7 +7,8 @@ reddid
 
 **reddid** is a simple command-line app written in Node.js that lets you download images from image-based subreddits on [Reddit](http://reddit.com), using their [API](https://www.reddit.com/dev/api).
 
-At the moment, only simple image downloads are supported, where `post.data.url` points to a valid image file and nothing else.
+At the moment, it supports `.jpg` and `.gifv` (`.webm`) on imgur.  
+Looking to add support for more providers
 
 Usage
 ----
