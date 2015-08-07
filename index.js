@@ -29,13 +29,13 @@ function getImage(post) {
   var m = url.match(imgurImageRegex);
   var ext;
  
-  if (m[0]) {  // If valid imgur url
+  if (m) {  // If valid http imgur image url
     if (m[4]) ext = '.webm'; // If url is .gifv
     else {
       ext = '.jpg';
       if (!m[3]) url = url.replace(m[2], '$&.jpg'); // If jpg url doesn't contain .jpg  
     }
-    if (!m[1]) url = url.replace('http://', 'http://i.');
+    if (!m[1]) url = url.replace('http://', 'http://i.'); // If url doesn't contain i.imgur
     var fileName = m[2] + ext;
   }
   else {
