@@ -24,13 +24,32 @@ function getPosts(cb) {
 
 function getImage(post) {
   var url = post.data.url;
+  var imgurImageRegex = /^http\:\/\/(i\.)?imgur\.com\/([A-Z0-9]{7})(?:(\.jpg)|(\.gifv))?(?:\?1)?$/i;
+  //var imgurAlbumRegex = /^http\:\/\/imgur\.com\/a\/[a-zA-Z0-9]{5}/;
+  var m = url.match(imgurImageRegex);
+  var ext;
+ 
+  if (m[0]) {  // If valid imgur url
+    if (m[4]) ext = '.webm'; // If url is .gifv
+    else {
+      ext = '.jpg';
+      if (!m[3]) url = url.replace(m[2], '$&.jpg'); // If jpg url doesn't contain .jpg  
+    }
+    if (!m[1]) url = url.replace('http://', 'http://i.');
+    var fileName = m[2] + ext;
+  }
+  else {
+    console.log(url, ' could not be downloaded');
+    return;
+  }
+
   http.request(url, res => {
     var data = new Stream();
     res.on('data', chunk => data.push(chunk));
     res.on('end'
-      , () => fs.writeFile(encodeURIComponent(url)
+      , () => fs.writeFile(fileName
         , data.read()
-        , () => console.log(url)));
+        , () => console.log(url, ' was downloaded successfully')));
   }).end();
 }
 
