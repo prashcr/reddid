@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var http = require('http');
 var Stream = require('stream').Transform;
+var chalk = require('chalk');
 
 module.exports = (sub, cat, num) => {
   var url = 'http://www.reddit.com/r/' 
@@ -26,32 +27,50 @@ function getPosts(url, cb) {
 
 function getImage(post) {
   var url = post.data.url;
-  var imgurImageRegex = /^https?\:\/\/(i\.)?imgur\.com\/([A-Z0-9]{7})(?:(\.jpg)|(\.gifv))?(?:\?1)?$/i;
-  //var imgurAlbumRegex = /^http\:\/\/imgur\.com\/a\/[a-zA-Z0-9]{5}/;
-  var m = url.match(imgurImageRegex);
+  var imgurImageRegex = /^https?\:\/\/(i\.)?imgur\.com\/([A-Z0-9]{5,8})((?:\.jpg)|(?:\.gifv)|(?:\.png)|(?:\.gif))?(?:\?1)?$/i;
+  var imgurAlbumRegex = /^http\:\/\/imgur\.com\/a\/[a-zA-Z0-9]{5}/;
+  var imgurImageMatch;
+  var imgurAlbumMatch;
+  var downloadUrl;
+  var filename;
   var ext;
  
-  if (m) {  // If valid imgur image url
-    if (~url.indexOf('https')) url = url.replace('https', 'http'); // If url is https, use http instead
-    if (m[4]) ext = '.webm'; // If url is .gifv
-    else {
-      ext = '.jpg';
-      if (!m[3]) url = url.replace(m[2], '$&.jpg'); // If jpg url doesn't contain .jpg  
-    }
-    if (!m[1]) url = url.replace('http://', 'http://i.'); // If url doesn't contain i.imgur
-    var fileName = m[2] + ext;
+  if (imgurImageMatch = url.match(imgurImageRegex)) {
+    downloadUrl = 'http://imgur.com/download/' + imgurImageMatch[2];
+    ext = imgurImageMatch[3] || '.jpg';
+    filename = imgurImageMatch[2] + ext;
+  }
+  else if (imgurAlbumMatch = url.match(imgurAlbumRegex)) {
+    console.log(url, chalk.cyan(' Imgur albums'), chalk.red(' not yet supported'));
+    return;
+  }
+  else if (~url.indexOf('imgur.com/gallery')) {
+    console.log(url, chalk.cyan(' Imgur galleries'), chalk.red(' not yet supported'));
+    return;
+  }
+  else if (~url.indexOf('pbs.twimg.com')) {
+    console.log(url, chalk.cyan(' Twitter'), chalk.red(' not yet supported'));
+    return;
+  }
+  else if (~url.indexOf('media.tumblr.com')) {
+    console.log(url, chalk.cyan(' Tumblr'), chalk.red(' not yet supported'));
+    return;
+  }
+  else if (~url.indexOf('gfycat.com')) {
+    console.log(url, chalk.cyan(' Gfycat'), chalk.red(' not yet supported'));
+    return;
   }
   else {
-    console.log(url, ' could not be downloaded');
+    console.log(url, chalk.red(' Unrecognized image url'));
     return;
   }
 
-  http.request(url, res => {
+  http.request(downloadUrl, res => {
     var data = new Stream();
     res.on('data', chunk => data.push(chunk));
     res.on('end'
-      , () => fs.writeFile(fileName
+      , () => fs.writeFile(filename
         , data.read()
-        , () => console.log(url, ' was downloaded successfully')));
+        , () => console.log(url, chalk.green(' downloaded successfully'))));
   }).end();
 }
