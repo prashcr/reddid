@@ -2,7 +2,7 @@
   "name": "reddid",
   "version": "1.0.0",
   "description": "Reddit Image Downloader",
-  "main": "index.js",
+  "bin": "cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/prashcr/reddid/issues"
   },
-  "homepage": "https://github.com/prashcr/reddid#readme"
+  "homepage": "https://github.com/prashcr/reddid#readme",
+  "dependencies": {
+    "meow": "^3.3.0"
+  }
 }

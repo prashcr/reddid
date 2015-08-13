@@ -1,17 +1,19 @@
+'use strict';
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
 var Stream = require('stream').Transform;
-var prog = process.argv.indexOf(path.resolve('.', './index.js'));
-var subreddit = process.argv[prog + 1] || 'aww';
-var category = process.argv[prog + 2] || 'hot';
-var num = process.argv[prog + 3] || '25';
-var url = 'http://www.reddit.com/r/' 
-  + subreddit + '/' 
-  + category + '.json'
+
+module.exports = (sub, cat, num) => {
+  var url = 'http://www.reddit.com/r/' 
+  + sub + '/' 
+  + cat + '.json'
   + '?limit=' + num;
 
-function getPosts(cb) {
+  getPosts(url, getImage);
+}
+
+function getPosts(url, cb) {
   http.get(url, res => {
     var body = '';
     res.on('data', d => body += d);
@@ -53,5 +55,3 @@ function getImage(post) {
         , () => console.log(url, ' was downloaded successfully')));
   }).end();
 }
-
-getPosts(getImage);
