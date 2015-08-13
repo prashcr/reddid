@@ -10,6 +10,8 @@ reddid
 At the moment, it supports all image formats on Imgur, but not albums or galleries.  
 Looking to add support for more providers.
 
+![Reddid in action](http://i.imgur.com/72gcPVW.gif)
+
 Install
 ----
 ```
