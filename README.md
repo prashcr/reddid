@@ -10,16 +10,22 @@ reddid
 At the moment, it supports `.jpg` and `.gifv` (`.webm`) on imgur.  
 Looking to add support for more providers
 
+Install
+----
+```
+$ npm install -g reddid
+```
+
 Usage
 ----
+```
+$ reddid <subreddit> <category> <num>
+```  
 
-`node index.js [subreddit] [category] [limit]`  
-  
-**subreddit** default: aww  
-**category** default: hot  
-**limit** default: 25
-
-**reddid** uses ES6, so you might have to transpile it to ES5 first or you can use `node --harmony` on `v0.12` or above. 
+Default arguments:
+```
+$ reddid pics hot 3
+```
 
 License
 ----
