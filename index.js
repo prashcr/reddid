@@ -2,6 +2,7 @@
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
+var async = require('async');
 var Stream = require('stream').Transform;
 var chalk = require('chalk');
 
@@ -21,7 +22,7 @@ function getPosts(url, cb) {
     res.on('end', () => {
       try {
         var parsed = JSON.parse(body);
-        parsed.data.children.forEach(cb);
+        async.each(parsed.data.children, cb);
       } catch (e) {
         console.log(e.message);
         return;
