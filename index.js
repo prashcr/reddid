@@ -19,8 +19,13 @@ function getPosts(url, cb) {
     var body = '';
     res.on('data', d => body += d);
     res.on('end', () => {
-      var parsed = JSON.parse(body);
-      parsed.data.children.forEach(cb);
+      try {
+        var parsed = JSON.parse(body);
+        parsed.data.children.forEach(cb);
+      } catch (e) {
+        console.log(e.message);
+        return;
+      }
     });
   }).on('error', err => console.error(err));
 }
