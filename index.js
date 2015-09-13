@@ -29,8 +29,10 @@ function getImage(post) {
   var url = post.data.url;
   var imgurImageRegex = /^https?\:\/\/(i\.)?imgur\.com\/([A-Z0-9]{5,8})((?:\.jpg)|(?:\.gifv)|(?:\.png)|(?:\.gif))?(?:\?1)?$/i;
   var imgurAlbumRegex = /^http\:\/\/imgur\.com\/a\/[a-zA-Z0-9]{5}/;
+  var genericJpgOrPngRegex = /http:\/\/.*\/([^\/]+\.(jpg|png|gif))$/;
   var imgurImageMatch;
   var imgurAlbumMatch;
+  var genericJpgOrPngMatch;
   var downloadUrl;
   var filename;
   var ext;
@@ -40,24 +42,20 @@ function getImage(post) {
     ext = imgurImageMatch[3] || '.jpg';
     filename = imgurImageMatch[2] + ext;
   }
+  else if (genericJpgOrPngMatch = url.match(genericJpgOrPngRegex)) {
+    downloadUrl = url;
+    filename = genericJpgOrPngMatch[1];
+  }
   else if (imgurAlbumMatch = url.match(imgurAlbumRegex)) {
-    console.log(url, chalk.cyan(' Imgur albums'), chalk.red(' not yet supported'));
+    console.log(url, chalk.cyan(' Imgur albums'), chalk.red(' not supported'));
     return;
   }
   else if (~url.indexOf('imgur.com/gallery')) {
-    console.log(url, chalk.cyan(' Imgur galleries'), chalk.red(' not yet supported'));
+    console.log(url, chalk.cyan(' Imgur galleries'), chalk.red(' not supported'));
     return;
   }
-  else if (~url.indexOf('pbs.twimg.com')) {
-    console.log(url, chalk.cyan(' Twitter'), chalk.red(' not yet supported'));
-    return;
-  }
-  else if (~url.indexOf('media.tumblr.com')) {
-    console.log(url, chalk.cyan(' Tumblr'), chalk.red(' not yet supported'));
-    return;
-  }
-  else if (~url.indexOf('gfycat.com')) {
-    console.log(url, chalk.cyan(' Gfycat'), chalk.red(' not yet supported'));
+  else if (~url.indexOf('https')) {
+    console.log(url, chalk.cyan(' https'), chalk.red(' not supported'));
     return;
   }
   else {
