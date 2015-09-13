@@ -6,10 +6,10 @@ var Stream = require('stream').Transform;
 var chalk = require('chalk');
 
 module.exports = (sub, cat, num) => {
-  var url = 'http://www.reddit.com/r/' 
-  + sub + '/' 
-  + cat + '.json'
-  + '?limit=' + num;
+  var url = 'http://www.reddit.com/r/' + 
+  sub + '/' + 
+  cat + '.json' + 
+  '?limit=' + num;
 
   getPosts(url, getImage);
 }
@@ -68,9 +68,11 @@ function getImage(post) {
   http.request(downloadUrl, res => {
     var data = new Stream();
     res.on('data', chunk => data.push(chunk));
-    res.on('end'
-      , () => fs.writeFile(filename
-        , data.read()
-        , () => console.log(url, chalk.green(' downloaded successfully'))));
+    res.on('end',
+      () => fs.writeFile(filename, 
+        data.read(), 
+        () => console.log(url, chalk.green(' downloaded successfully'))
+      )
+    );
   }).end();
 }
