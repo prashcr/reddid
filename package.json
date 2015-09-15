@@ -1,6 +1,6 @@
 {
   "name": "reddid",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Reddit Image Downloader",
   "bin": "cli.js",
   "scripts": {
