@@ -2,37 +2,38 @@
 
 const fs = require('fs');
 const mime = require('mime');
-const path = require('path');
 const request = require('request');
 const async = require('async');
 const chalk = require('chalk');
 
-/* 
+/*
  * Exports module to be called by cli.js, which is our executable
  */
 module.exports = (sub, cat, num) => {
-  const url = 'http://www.reddit.com/r/' + 
-  sub + '/' + 
-  cat + '.json' + 
-  '?limit=' + num;
+  const url = [
+    'http://www.reddit.com/r/',
+    sub, '/', cat, '.json', '?limit=', num
+  ].join();
 
   getPosts(url, getImage);
-}
+};
 
-/* 
+/*
  * GETs JSON data, then calls getImage on each post
  * Use try/catch since Reddit sends an HTML error page instead of JSON if server is under load
  */
-function getPosts(url) {
+function getPosts (url) {
   request(url, (err, res, body) => {
+    if (err) return console.log(err);
     try {
       const parsed = JSON.parse(body);
       async.parallel(parsed.data.children.map((link) => {
-        return function(callback) {
+        return function (callback) {
           getImage(link, callback);
-        }
+        };
       }),
-      function(err, results) {
+      function (err, results) {
+        if (err) return console.log(err);
         console.log('All downloads complete');
         console.log(`Downloaded ${results.filter((res) => res).length} out of ${results.length} links`);
       });
@@ -47,55 +48,43 @@ function getPosts(url) {
  * Rigorous tests are needed since an invalid url may slow down or crash the program
  * If url isn't an Imgur image, and doesn't end with .jpg/.png/.gif, then it does nothing
  */
-function getImage(post, callback) {
+function getImage (post, callback) {
   const url = post.data.url;
   const imgurImageRegex = /^https?\:\/\/(i\.)?imgur\.com\/(?:gallery\/)?([A-Z0-9]{5,8})((?:\.jpg)|(?:\.gifv)|(?:\.png)|(?:\.gif))?(?:\?1)?$/i;
-  const imgurAlbumRegex = /^http\:\/\/imgur\.com\/a\/[a-zA-Z0-9]{5}/;
   const genericJpgOrPngOrGifRegex = /http:\/\/.*\/([^\/]+\.(jpg|png|gif))$/;
-  let imgurImageMatch;
-  let imgurAlbumMatch;
-  let genericJpgOrPngOrGifMatch;
-  let downloadUrl;
-  let filename;
-  let ext;
- 
-  if (imgurImageMatch = url.match(imgurImageRegex)) {
-    // Imgur has a special download page, since Imgur urls vary a lot
-    downloadUrl = 'http://imgur.com/download/' + imgurImageMatch[2];
-    filename = imgurImageMatch[2];
-    ext = imgurImageMatch[3];
-    // Extra logic to determine file extension when it isn't available in the url
+
+  if (url.match(imgurImageRegex)) {
+    let imgurImageMatch = url.match(imgurImageRegex);
+    let downloadUrl = 'http://imgur.com/download/' + imgurImageMatch[2];
+    let filename = imgurImageMatch[2];
+    let ext = imgurImageMatch[3];
+
+    // Download just the header to determine file extension when it isn't available in the url
     if (!ext) {
       request({url: downloadUrl, method: 'HEAD'}, (err, res, body) => {
+        if (err) return console.log(err);
         ext = '.' + mime.extension(res.headers['content-type']);
         downloadImage(downloadUrl, filename + ext);
       });
-    }
-    else {
+    } else {
       downloadImage(downloadUrl, filename + ext, callback);
     }
-    return;
-  }
-  else if (genericJpgOrPngOrGifMatch = url.match(genericJpgOrPngOrGifRegex)) {
-    downloadUrl = url;
-    filename = genericJpgOrPngOrGifMatch[1];
+  } else if (url.match(genericJpgOrPngOrGifRegex)) {
+    let genericJpgOrPngOrGifMatch = url.match(genericJpgOrPngOrGifRegex);
+    let downloadUrl = url;
+    let filename = genericJpgOrPngOrGifMatch[1];
     downloadImage(downloadUrl, filename, callback);
-    return;
-  }
-  else if (imgurAlbumMatch = url.match(imgurAlbumRegex)) {
-    console.log(url, chalk.cyan(' Imgur albums'), chalk.red(' not supported'));
-  }
-  else {
+  } else {
     console.log(url, chalk.red(' Unrecognized image url'));
+    callback(null, null);
   }
-  callback(null, null);
 }
 
-function downloadImage(url, filename, callback) {
+function downloadImage (url, filename, callback) {
   request(url)
-      .pipe(fs.createWriteStream(filename))
-      .on('close', () => {
-        console.log(url, chalk.green(' downloaded successfully'));
-        callback(null, filename);
-      });
+  .pipe(fs.createWriteStream(filename))
+  .on('close', () => {
+    console.log(url, chalk.green(' downloaded successfully'));
+    callback(null, filename);
+  });
 }
