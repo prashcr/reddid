@@ -13,7 +13,7 @@ module.exports = (sub, cat, num) => {
   const url = [
     'http://www.reddit.com/r/',
     sub, '/', cat, '.json', '?limit=', num
-  ].join();
+  ].join('');
 
   getPosts(url, getImage);
 };
@@ -27,18 +27,15 @@ function getPosts (url) {
     if (err) return console.log(err);
     try {
       const parsed = JSON.parse(body);
-      async.parallel(parsed.data.children.map((link) => {
-        return function (callback) {
-          getImage(link, callback);
-        };
-      }),
-      function (err, results) {
-        if (err) return console.log(err);
-        console.log('All downloads complete');
-        console.log(`Downloaded ${results.filter((res) => res).length} out of ${results.length} links`);
-      });
-    } catch (e) {
-      console.log(e.message);
+      async.parallel(
+        parsed.data.children.map(link => callback => getImage(link, callback)),
+        (err, results) => {
+          if (err) return console.log(err);
+          console.log('All downloads complete');
+          console.log(`Downloaded ${results.filter(res => res).length} out of ${results.length} links`);
+        });
+    } catch (err) {
+      console.log(err.message);
     }
   });
 }
@@ -64,7 +61,7 @@ function getImage (post, callback) {
       request({url: downloadUrl, method: 'HEAD'}, (err, res, body) => {
         if (err) return console.log(err);
         ext = '.' + mime.extension(res.headers['content-type']);
-        downloadImage(downloadUrl, filename + ext);
+        downloadImage(downloadUrl, filename + ext, callback);
       });
     } else {
       downloadImage(downloadUrl, filename + ext, callback);
