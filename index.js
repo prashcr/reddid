@@ -5,6 +5,7 @@ const mime = require('mime')
 const request = require('request')
 const async = require('async')
 const chalk = require('chalk')
+const trunc = require('unicode-byte-truncate')
 const sanitize = require('sanitize-filename')
 
 /*
@@ -50,7 +51,8 @@ function getImage (post, callback) {
     return callback(null, null)
   }
   const url = post.data.preview.images[0].source.url
-  const filename = sanitize(post.data.title, {replacement: '_'})
+  // truncate to 251 so we have 4 bytes for the file extension
+  const filename = trunc(sanitize(post.data.title, {replacement: '_'}), 251)
   const redditImageRegex = /https?:\/\/i\.redditmedia\.com\/.*\.(jpg|png|gif)/
 
   if (url.match(redditImageRegex)) {
