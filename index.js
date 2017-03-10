@@ -8,14 +8,25 @@ const chalk = require('chalk')
 const trunc = require('unicode-byte-truncate')
 const sanitize = require('sanitize-filename')
 
+const defaultOptions = {
+  sub: 'pics',
+  cat: 'hot',
+  num: '3',
+  time: null
+}
+
 /*
  * Exports module to be called by cli.js, which is our executable
  */
-module.exports = (sub, cat, num) => {
-  const url = [
+module.exports = (options) => {
+  const {sub, cat, num, time} = Object.assign(defaultOptions, options)
+  let url = [
     'http://www.reddit.com/r/',
     sub, '/', cat, '.json', '?limit=', num
   ].join('')
+
+  if (cat === 'top' && time !== null)
+    url += '&t=' + time
 
   getPosts(url, getImage)
 }
