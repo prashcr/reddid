@@ -1,4 +1,4 @@
-#!/usr/bin/env node --harmony
+#!/usr/bin/env node
 'use strict';
 var meow = require('meow');
 var reddid = require('./');
